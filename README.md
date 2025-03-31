@@ -8,15 +8,20 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-# Development and scraping
+# Scraping, saves html data
 
 Warning: Scraped data can be huge
 
 ```
-# Edit scrape.py as needed
-
 source venv/bin/activate
 python3 scrape.py
 ```
 
+# Converting scraped html data into json
+```
+source venv/bin/activate
+python3 convert.py
+```
+
+---
 data will be scraped/generated into `data/`
