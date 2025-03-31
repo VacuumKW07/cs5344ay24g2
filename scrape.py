@@ -96,7 +96,7 @@ def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> Non
 
 if __name__ == "__main__":
     # Comment and uncomment
-    #scrape_travelerfolio()
+    scrape_travelerfolio()
     scrape_thesmartlocal()
     scrape_alvinology()
     scrape_iwandered()
