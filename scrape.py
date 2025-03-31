@@ -73,8 +73,37 @@ def _thesmartlocal_filename_for_detail_page_url(full_url:str) -> str:
 
 
 def scrape_alvinology() -> None:
-    # TODO
-    pass
+    URL_BASE = "https://alvinology.com/category/all-travel/page/"
+    for i in range(208):  # 208 listing pages found
+        pagenum = i + 1
+        listings_page_url = URL_BASE + str(pagenum)
+        listings_page = requests.get(listings_page_url)
+        listings_page_soup = BeautifulSoup(listings_page.content, "html.parser")
+
+        # the read-more link is a little trickier to find, can't search globally based on class
+        # Need to target the content area
+        listings_page_content = listings_page_soup.find("div", class_="cs-posts-area cs-posts-area-posts")
+
+        # each listing page has snippets of full articles with a 'Read More' link, they are hidden in the title
+        titles = listings_page_content.find_all("h2", class_="cs-entry__title")
+        detail_links = listings_page_content.find_all("a", class_="link-secondary")
+        for title in titles:
+            link = title.find("a")
+            detail_page_url = link.get("href")
+            print("Scraping {}".format(detail_page_url))
+            filename = _alvinology_filename_for_detail_page_url(detail_page_url)
+            details_page = requests.get(detail_page_url)
+            details_page_soup = BeautifulSoup(details_page.content, "html.parser")
+            _save_scraped_page("alvinology", filename, details_page_soup)
+    print("Scraping done for alvinology")
+
+
+def _alvinology_filename_for_detail_page_url(full_url:str) -> str:
+    """ Example url: https://thesmartlocal.com/read/bangkok-to-khao-yai/
+    """
+    url_parsed = urllib.parse.urlparse(full_url)
+    return url_parsed.path.split("/")[4] + ".html"
+
 
 
 def scrape_iwandered() -> None:
