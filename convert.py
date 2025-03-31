@@ -22,7 +22,7 @@ def convert_alvinology() -> None:
         print(
             "Converting {}: {}".format(constants.SITE_NAME_ALVINOLOGY, slug))
         title_h1 = soup.find(
-            "h1", class_="cs-entry__title cs-entry__title-line")
+            "h1", class_="cs-entry__title")
         title = title_h1.find("span").text
         content_div = soup.find("div", class_="entry-content")
         content = []
