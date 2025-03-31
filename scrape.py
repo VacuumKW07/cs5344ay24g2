@@ -107,8 +107,30 @@ def _alvinology_filename_for_detail_page_url(full_url:str) -> str:
 
 
 def scrape_theoccasionaltraveller() -> None:
-    # TODO
-    pass
+    URL_BASE = "https://theoccasionaltraveller.com/blog/page/"
+    for i in range(56):  # 56 listing pages found
+        pagenum = i + 1
+        listings_page_url = URL_BASE + str(pagenum)
+        listings_page = requests.get(listings_page_url)
+        listings_page_soup = BeautifulSoup(listings_page.content, "html.parser")
+
+        # each listing page has snippets of full articles with a 'Read More' link
+        detail_links = listings_page_soup.find_all("a", class_="button article-read-more")
+        for link in detail_links:
+            detail_page_url = link.get("href")
+            print("Scraping {}".format(detail_page_url))
+            filename = _theoccasionaltraveller_filename_for_detail_page_url(detail_page_url)
+            details_page = requests.get(detail_page_url)
+            details_page_soup = BeautifulSoup(details_page.content, "html.parser")
+            _save_scraped_page("theoccasionaltraveller", filename, details_page_soup)
+    print("Scraping done for theoccasionaltraveller")
+
+
+def _theoccasionaltraveller_filename_for_detail_page_url(full_url:str) -> str:
+    """ Example url: https://theoccasionaltraveller.com/taiwan-tales-5-hualien-taroko-gorge/
+    """
+    url_parsed = urllib.parse.urlparse(full_url)
+    return url_parsed.path.replace("/","") + ".html"
 
 
 def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> None:
