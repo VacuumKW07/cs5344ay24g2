@@ -47,8 +47,29 @@ def _travelerfolio_filename_for_detail_page_url(full_url:str) -> str:
 
 
 def scrape_thesmartlocal() -> None:
-    # TODO
-    pass
+    URL_BASE = "https://thesmartlocal.com/category/travel/southeast-asia/page/"
+    for i in range(67):  # 67 listing pages found
+        pagenum = i + 1
+        listings_page_url = URL_BASE + str(pagenum)
+        listings_page = requests.get(listings_page_url)
+        listings_page_soup = BeautifulSoup(listings_page.content, "html.parser")
+        # each listing page has snippets of full articles with a 'Read More' link
+        detail_links = listings_page_soup.find_all("a", class_="link-secondary")
+        for link in detail_links:
+            detail_page_url = link.get("href")
+            print("Scraping {}".format(detail_page_url))
+            filename = _travelerfolio_filename_for_detail_page_url(detail_page_url)
+            details_page = requests.get(detail_page_url)
+            details_page_soup = BeautifulSoup(details_page.content, "html.parser")
+            _save_scraped_page("thesmartlocal", filename, details_page_soup)
+    print("Scraping done for thesmartlocal")
+
+
+def _thesmartlocal_filename_for_detail_page_url(full_url:str) -> str:
+    """ Example url: https://thesmartlocal.com/read/bangkok-to-khao-yai/
+    """
+    url_parsed = urllib.parse.urlparse(full_url)
+    return url_parsed.path.replace("read/", "").replace("/","") + ".html"
 
 
 def scrape_alvinology() -> None:
@@ -75,7 +96,7 @@ def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> Non
 
 if __name__ == "__main__":
     # Comment and uncomment
-    scrape_travelerfolio()
+    #scrape_travelerfolio()
     scrape_thesmartlocal()
     scrape_alvinology()
     scrape_iwandered()
