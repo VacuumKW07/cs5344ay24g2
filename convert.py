@@ -37,6 +37,9 @@ def convert_alvinology() -> None:
             elif para.find("h2"):
                 h2 = para.find("h2")
                 content.append({"type": "h2", "text": h2.get_text()})
+            elif para.find("h3"):
+                h3 = para.find("h3")
+                content.append({"type": "h3", "text": h3.get_text()})
             else:
                 content.append({"type": "text", "text": para.get_text()})
         doc = {"title": title, "content": content}
@@ -77,6 +80,40 @@ def convert_theoccasionaltraveller() -> None:
             constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug, doc)
 
     print("Converting done for theoccasionaltraveller")
+
+
+def convert_travelerfolio() -> None:
+    for (slug, soup) in _read_pages(
+        constants.SITE_NAME_TRAVELERFOLIO
+    ):
+        print(
+            "Converting {}: {}".format(
+                constants.SITE_NAME_TRAVELERFOLIO, slug
+            )
+        )
+        title_h1 = soup.find(
+            "h1", class_="entry-title")
+        title = title_h1.get_text()
+        content_div = soup.find("div", class_="entry-content")
+        content = []
+        for line in content_div.find_all():
+            if line.name == "figure":
+                if line.find("img"):
+                    img = line.find("img")
+                    content.append({"type": "img", "src": img.get("src")})
+                else:
+                    continue
+            elif line.name == "h2":
+                content.append({"type": "h2", "text": line.get_text()})
+            elif line.name == "h3":
+                content.append({"type": "h3", "text": line.get_text()})
+            elif line.name == "p":
+                content.append({"type": "text", "text": line.get_text()})
+        doc = {"title": title, "content": content}
+        _save_json(
+            constants.SITE_NAME_TRAVELERFOLIO, slug, doc)
+
+    print("Converting done for travelerfolio")
 
 
 def _read_pages(domain_name: str) -> Iterable[Tuple[str, BeautifulSoup]]:
@@ -120,7 +157,7 @@ def _save_json(
 
 if __name__ == "__main__":
     # Comment and uncomment
-    # convert_travelerfolio()
+    convert_travelerfolio()
     # convert_thesmartlocal()
-     convert_alvinology()
+    convert_alvinology()
     convert_theoccasionaltraveller()
