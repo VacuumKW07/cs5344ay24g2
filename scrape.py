@@ -9,6 +9,7 @@ import requests
 import urllib
 import os
 from bs4 import BeautifulSoup
+import constants
 
 
 def scrape_travelerfolio() -> None:
@@ -27,7 +28,7 @@ def scrape_travelerfolio() -> None:
             filename = _travelerfolio_filename_for_detail_page_url(detail_page_url)
             details_page = requests.get(detail_page_url)
             details_page_soup = BeautifulSoup(details_page.content, "html.parser")
-            _save_scraped_page("travelerfolio", filename, details_page_soup)
+            _save_scraped_page(constants.SITE_NAME_TRAVELERFOLIO, filename, details_page_soup)
     print("Scraping done for travelerfolio")
 
 
@@ -53,7 +54,7 @@ def scrape_thesmartlocal() -> None:
             filename = _travelerfolio_filename_for_detail_page_url(detail_page_url)
             details_page = requests.get(detail_page_url)
             details_page_soup = BeautifulSoup(details_page.content, "html.parser")
-            _save_scraped_page("thesmartlocal", filename, details_page_soup)
+            _save_scraped_page(constants.SITE_NAME_THESMARTLOCAL, filename, details_page_soup)
     print("Scraping done for thesmartlocal")
 
 
@@ -86,7 +87,7 @@ def scrape_alvinology() -> None:
             filename = _alvinology_filename_for_detail_page_url(detail_page_url)
             details_page = requests.get(detail_page_url)
             details_page_soup = BeautifulSoup(details_page.content, "html.parser")
-            _save_scraped_page("alvinology", filename, details_page_soup)
+            _save_scraped_page(constants.SITE_NAME_ALVINOLOGY, filename, details_page_soup)
     print("Scraping done for alvinology")
 
 
@@ -114,7 +115,7 @@ def scrape_theoccasionaltraveller() -> None:
             filename = _theoccasionaltraveller_filename_for_detail_page_url(detail_page_url)
             details_page = requests.get(detail_page_url)
             details_page_soup = BeautifulSoup(details_page.content, "html.parser")
-            _save_scraped_page("theoccasionaltraveller", filename, details_page_soup)
+            _save_scraped_page(constants.SITE_NAME_THEOCCASIONALTRAVELLER, filename, details_page_soup)
     print("Scraping done for theoccasionaltraveller")
 
 
