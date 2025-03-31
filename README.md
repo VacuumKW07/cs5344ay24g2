@@ -19,4 +19,4 @@ source venv/bin/activate
 python3 scrape.py
 ```
 
-data will be scraped into `data/`
+data will be scraped/generated into `data/`
