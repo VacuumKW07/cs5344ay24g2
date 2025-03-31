@@ -5,9 +5,12 @@ Sites we want to try to scrape:
     - https://alvinology.com/
     - https://iwandered.net/
 
+We might not need to scrape all, but if it's not too hard we should get as much as possible
+
 Aim to save individual pages that have the full content for what to do at destination(s)
 in html for .e.g.
 data/travelerfolio/kuala-lumpur-malaysia-travel.html
+Also, aim for travel articles
 
 """
 import requests
@@ -33,6 +36,7 @@ def scrape_travelerfolio() -> None:
             details_page = requests.get(detail_page_url)
             details_page_soup = BeautifulSoup(details_page.content, "html.parser")
             _save_scraped_page("travelerfolio", filename, details_page_soup)
+    print("Scraping done for travelerfolio")
 
 
 def _travelerfolio_filename_for_detail_page_url(full_url:str) -> str:
@@ -40,6 +44,21 @@ def _travelerfolio_filename_for_detail_page_url(full_url:str) -> str:
     """
     url_parsed = urllib.parse.urlparse(full_url)
     return url_parsed.path.replace("/","") + ".html"
+
+
+def scrape_thesmartlocal() -> None:
+    # TODO
+    pass
+
+
+def scrape_alvinology() -> None:
+    # TODO
+    pass
+
+
+def scrape_iwandered() -> None:
+    # TODO
+    pass
 
 
 def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> None:
@@ -57,3 +76,6 @@ def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> Non
 if __name__ == "__main__":
     # Comment and uncomment
     scrape_travelerfolio()
+    scrape_thesmartlocal()
+    scrape_alvinology()
+    scrape_iwandered()
