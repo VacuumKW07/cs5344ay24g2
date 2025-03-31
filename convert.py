@@ -5,7 +5,11 @@ Convert Scraped HTML content into our documents of our own data structure
 {
     title: <main title>
     content: [
-        { type: <img | h2 | text>, text: <text if any>, src: <src if any> }
+        {
+            type: <img | h2 | h3 | text>,
+            text: <text if any>,
+            src: <src if any>
+        }
     ]
 }
 """
@@ -39,6 +43,40 @@ def convert_alvinology() -> None:
         _save_json(constants.SITE_NAME_ALVINOLOGY, slug, doc)
 
     print("Converting done for alvinology")
+
+
+def convert_theoccasionaltraveller() -> None:
+    for (slug, soup) in _read_pages(
+        constants.SITE_NAME_THEOCCASIONALTRAVELLER
+    ):
+        print(
+            "Converting {}: {}".format(
+                constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug
+            )
+        )
+        title_h1 = soup.find(
+            "h1", class_="entry-title")
+        title = title_h1.get_text()
+        content_div = soup.find("div", class_="entry-content")
+        content = []
+        for line in content_div.find_all():
+            if line.name == "div":
+                if line.find("img"):
+                    img = line.find("img")
+                    content.append({"type": "img", "src": img.get("src")})
+                else:
+                    continue
+            elif line.name == "h2":
+                content.append({"type": "h2", "text": line.get_text()})
+            elif line.name == "h3":
+                content.append({"type": "h3", "text": line.get_text()})
+            elif line.name == "p":
+                content.append({"type": "text", "text": line.get_text()})
+        doc = {"title": title, "content": content}
+        _save_json(
+            constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug, doc)
+
+    print("Converting done for theoccasionaltraveller")
 
 
 def _read_pages(domain_name: str) -> Iterable[Tuple[str, BeautifulSoup]]:
@@ -84,5 +122,5 @@ if __name__ == "__main__":
     # Comment and uncomment
     # convert_travelerfolio()
     # convert_thesmartlocal()
-    convert_alvinology()
-    # convert_theoccasionaltraveller()
+     convert_alvinology()
+    convert_theoccasionaltraveller()
