@@ -175,3 +175,4 @@ cython_debug/
 
 # Scraped and generated files
 data/html/*/*.html
+data/json/*/*.json
