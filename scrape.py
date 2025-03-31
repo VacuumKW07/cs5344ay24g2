@@ -3,7 +3,7 @@ Sites we want to try to scrape:
     - https://travelerfolio.com/
     - https://thesmartlocal.com/
     - https://alvinology.com/
-    - https://iwandered.net/
+    - https://theoccasionaltraveller.net/
 
 We might not need to scrape all, but if it's not too hard we should get as much as possible
 
@@ -99,14 +99,14 @@ def scrape_alvinology() -> None:
 
 
 def _alvinology_filename_for_detail_page_url(full_url:str) -> str:
-    """ Example url: https://thesmartlocal.com/read/bangkok-to-khao-yai/
+    """ Example url: https://alvinology.com/2024/01/12/royal-caribbeans-icon-of-the-seas-docks-in-miami-a-spectacular-arrival-marks-the-start-of-a-new-vacation-era/
     """
     url_parsed = urllib.parse.urlparse(full_url)
     return url_parsed.path.split("/")[4] + ".html"
 
 
 
-def scrape_iwandered() -> None:
+def scrape_theoccasionaltraveller() -> None:
     # TODO
     pass
 
@@ -128,4 +128,4 @@ if __name__ == "__main__":
     scrape_travelerfolio()
     scrape_thesmartlocal()
     scrape_alvinology()
-    scrape_iwandered()
+    scrape_theoccasionaltraveller()
