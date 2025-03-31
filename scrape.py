@@ -163,7 +163,7 @@ def _save_scraped_page(
     Common function
     Will save to data/html/<domain_name>/<filename>
     """
-    parent_dir = "data/html/{}".format(domain_name)
+    parent_dir = "{}/{}".format(constants.DIR_HTML, domain_name)
     os.makedirs(parent_dir, exist_ok=True)
     path = "{}/{}".format(parent_dir, filename)
     with open(path, 'w', encoding='utf-8') as f:
