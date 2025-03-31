@@ -10,9 +10,13 @@ pip3 install -r requirements.txt
 
 # Development and scraping
 
+Warning: Scraped data can be huge
+
 ```
 # Edit scrape.py as needed
 
 source venv/bin/activate
 python3 scrape.py
 ```
+
+data will be scraped into `data/`
