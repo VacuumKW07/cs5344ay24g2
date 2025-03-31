@@ -116,6 +116,38 @@ def convert_travelerfolio() -> None:
     print("Converting done for travelerfolio")
 
 
+def convert_thesmartlocal() -> None:
+    for (slug, soup) in _read_pages(
+        constants.SITE_NAME_THESMARTLOCAL
+    ):
+        print(
+            "Converting {}: {}".format(
+                constants.SITE_NAME_THESMARTLOCAL, slug
+            )
+        )
+        title_h1 = soup.find(
+            "h1", class_="entry-title")
+        title = title_h1.get_text()
+        content_div = soup.find("div", {"id": "wtr-content"})
+        content = []
+        for line in content_div.find_all():
+            if line.name == "h2":
+                content.append({"type": "h2", "text": line.get_text()})
+            elif line.name == "h3":
+                content.append({"type": "h3", "text": line.get_text()})
+            elif line.name == "p":
+                if line.find("img"):
+                    img = line.find("img")
+                    content.append({"type": "img", "src": img.get("src")})
+                else:
+                    content.append({"type": "text", "text": line.get_text()})
+        doc = {"title": title, "content": content}
+        _save_json(
+            constants.SITE_NAME_THESMARTLOCAL, slug, doc)
+
+    print("Converting done for thesmartlocal")
+
+
 def _read_pages(domain_name: str) -> Iterable[Tuple[str, BeautifulSoup]]:
     """
     Common function
@@ -158,6 +190,6 @@ def _save_json(
 if __name__ == "__main__":
     # Comment and uncomment
     convert_travelerfolio()
-    # convert_thesmartlocal()
+    convert_thesmartlocal()
     convert_alvinology()
     convert_theoccasionaltraveller()
