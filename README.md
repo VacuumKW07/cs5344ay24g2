@@ -7,3 +7,12 @@ virtualenv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 ```
+
+# Development and scraping
+
+```
+# Edit scrape.py as needed
+
+source venv/bin/activate
+python3 scrape.py
+```
