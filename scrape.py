@@ -37,11 +37,11 @@ def scrape_travelerfolio() -> None:
     print("Scraping done for travelerfolio")
 
 
-def _travelerfolio_filename_for_detail_page_url(full_url:str) -> str:
+def _travelerfolio_filename_for_detail_page_url(full_url: str) -> str:
     """ Example url: https://travelerfolio.com/family-friendly-penang-trip/
     """
     url_parsed = urllib.parse.urlparse(full_url)
-    return url_parsed.path.replace("/","") + ".html"
+    return url_parsed.path.replace("/", "") + ".html"
 
 
 def scrape_thesmartlocal() -> None:
@@ -69,11 +69,11 @@ def scrape_thesmartlocal() -> None:
     print("Scraping done for thesmartlocal")
 
 
-def _thesmartlocal_filename_for_detail_page_url(full_url:str) -> str:
+def _thesmartlocal_filename_for_detail_page_url(full_url: str) -> str:
     """ Example url: https://thesmartlocal.com/read/bangkok-to-khao-yai/
     """
     url_parsed = urllib.parse.urlparse(full_url)
-    return url_parsed.path.replace("read/", "").replace("/","") + ".html"
+    return url_parsed.path.replace("read/", "").replace("/", "") + ".html"
 
 
 def scrape_alvinology() -> None:
@@ -109,7 +109,7 @@ def scrape_alvinology() -> None:
     print("Scraping done for alvinology")
 
 
-def _alvinology_filename_for_detail_page_url(full_url:str) -> str:
+def _alvinology_filename_for_detail_page_url(full_url: str) -> str:
     """
     Example url:
         https://alvinology.com/2024/01/12/royal-caribbeans-icon-of-the\
@@ -118,7 +118,6 @@ def _alvinology_filename_for_detail_page_url(full_url:str) -> str:
     """
     url_parsed = urllib.parse.urlparse(full_url)
     return url_parsed.path.split("/")[4] + ".html"
-
 
 
 def scrape_theoccasionaltraveller() -> None:
@@ -148,17 +147,17 @@ def scrape_theoccasionaltraveller() -> None:
     print("Scraping done for theoccasionaltraveller")
 
 
-def _theoccasionaltraveller_filename_for_detail_page_url(full_url:str) -> str:
+def _theoccasionaltraveller_filename_for_detail_page_url(full_url: str) -> str:
     """
     Example url:
         https://theoccasionaltraveller.com/taiwan-tales-5-hualien-taroko-gorge/
     """
     url_parsed = urllib.parse.urlparse(full_url)
-    return url_parsed.path.replace("/","") + ".html"
+    return url_parsed.path.replace("/", "") + ".html"
 
 
 def _save_scraped_page(
-    domain_name:str, filename:str, soup:BeautifulSoup
+    domain_name: str, filename: str, soup: BeautifulSoup
 ) -> None:
     """
     Common function
