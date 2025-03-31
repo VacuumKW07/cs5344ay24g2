@@ -1,3 +1,15 @@
+"""
+Sites we want to try to scrape:
+    - https://travelerfolio.com/
+    - https://thesmartlocal.com/
+    - https://alvinology.com/
+    - https://iwandered.net/
+
+Aim to save individual pages that have the full content for what to do at destination(s)
+in html for .e.g.
+data/travelerfolio/kuala-lumpur-malaysia-travel.html
+
+"""
 import requests
 import urllib
 import os
@@ -31,6 +43,10 @@ def _travelerfolio_filename_for_detail_page_url(full_url:str) -> str:
 
 
 def _save_scraped_page(domain_name:str, filename:str, soup:BeautifulSoup) -> None:
+    """
+    Common function
+    Will save to data/<domain_name>/<filename>
+    """
     parent_dir = "data/{}".format(domain_name)
     os.makedirs(parent_dir, exist_ok=True)
     path = "{}/{}".format(parent_dir, filename)
