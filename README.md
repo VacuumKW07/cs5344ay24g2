@@ -18,9 +18,17 @@ python3 scrape.py
 ```
 
 # Converting scraped html data into json
+Requires scraped html data
 ```
 source venv/bin/activate
 python3 html_to_json.py
+```
+
+# Extracting and saving key terms
+Requires scraped and converted json data
+```
+source venv/bin/activate
+python3 key_terms.py
 ```
 
 # Notes:
