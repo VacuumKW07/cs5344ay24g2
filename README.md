@@ -33,18 +33,22 @@ python3 key_terms.py
 
 # Notes:
 - Articles scraped: `3949`
+## Terms
 - 1-shingle, 2-shingle and 3-shingle used for terms
   - Reason: attraction names are sometimes up to 3 words
-- Use TF.IDF for finding key terms within normal text paragraphs in documents
+- Used TF.IDF for finding key terms within normal text paragraphs in documents
   - TF.IDF not applied to headings as we consider all terms from headings important
+- Stats:
+  - When TF.IDF threshold 0.5
+    - Avg terms per doc: 87.10939478348949
 ## Problems:
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
 
 
 # Data Sources:
-Stopwords from Python NLTK library: https://www.nltk.org/
-Scraped sites:
+- Stopwords from Python NLTK library: https://www.nltk.org/
+- Scraped sites:
     - https://travelerfolio.com/
     - https://thesmartlocal.com/
     - https://alvinology.com/

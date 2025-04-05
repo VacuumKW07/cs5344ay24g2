@@ -30,12 +30,22 @@ TF_IDF_THRESHOLD = 0.5
 
 def add_key_terms() -> None:
     doc_index = 0
+    total_terms = 0
     for doc in _read_files():
         doc_index += 1
         print("[Key Terms] Processing doc {}".format(str(doc_index)))
+        terms = _key_terms_from_doc(doc)
         doc[DOC_KEY_KEY_TERMS] = _key_terms_from_doc(doc)
+        num_terms = len(terms)
+        total_terms += num_terms
+        print("[Key Terms] doc {} has {} terms".format(
+            str(doc_index), str(num_terms)))
         _save_doc(str(doc_index), doc)
         print("[Key Terms] Doc {} saved".format(str(doc_index)))
+
+    print("[Key Terms] Total terms: {}, Avg terms per doc: {}".format(
+        str(total_terms), str(total_terms / doc_index)
+    ))
     print("[Key Terms] Done")
 
 
