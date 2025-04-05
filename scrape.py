@@ -26,7 +26,7 @@ def scrape_travelerfolio() -> None:
         detail_links = listings_page_soup.find_all("a", class_="more-link")
         for link in detail_links:
             detail_page_url = link.get("href")
-            print("Scraping {}".format(detail_page_url))
+            print("[Scraping] {}".format(detail_page_url))
             filename = _travelerfolio_filename_for_detail_page_url(
                 detail_page_url)
             details_page = requests.get(detail_page_url)
@@ -34,7 +34,7 @@ def scrape_travelerfolio() -> None:
                 details_page.content, "html.parser")
             _save_scraped_page(
                 constants.SITE_NAME_TRAVELERFOLIO, filename, details_page_soup)
-    print("Scraping done for travelerfolio")
+    print("[Scraping] done for travelerfolio")
 
 
 def _travelerfolio_filename_for_detail_page_url(full_url: str) -> str:
@@ -58,7 +58,7 @@ def scrape_thesmartlocal() -> None:
             "a", class_="link-secondary")
         for link in detail_links:
             detail_page_url = link.get("href")
-            print("Scraping {}".format(detail_page_url))
+            print("[Scraping] {}".format(detail_page_url))
             filename = _travelerfolio_filename_for_detail_page_url(
                 detail_page_url)
             details_page = requests.get(detail_page_url)
@@ -66,7 +66,7 @@ def scrape_thesmartlocal() -> None:
                 details_page.content, "html.parser")
             _save_scraped_page(
                 constants.SITE_NAME_THESMARTLOCAL, filename, details_page_soup)
-    print("Scraping done for thesmartlocal")
+    print("[Scraping] done for thesmartlocal")
 
 
 def _thesmartlocal_filename_for_detail_page_url(full_url: str) -> str:
@@ -98,7 +98,7 @@ def scrape_alvinology() -> None:
         for title in titles:
             link = title.find("a")
             detail_page_url = link.get("href")
-            print("Scraping {}".format(detail_page_url))
+            print("[Scraping] {}".format(detail_page_url))
             filename = _alvinology_filename_for_detail_page_url(
                 detail_page_url)
             details_page = requests.get(detail_page_url)
@@ -106,7 +106,7 @@ def scrape_alvinology() -> None:
                 details_page.content, "html.parser")
             _save_scraped_page(
                 constants.SITE_NAME_ALVINOLOGY, filename, details_page_soup)
-    print("Scraping done for alvinology")
+    print("[Scraping] done for alvinology")
 
 
 def _alvinology_filename_for_detail_page_url(full_url: str) -> str:
@@ -135,7 +135,7 @@ def scrape_theoccasionaltraveller() -> None:
             "a", class_="button article-read-more")
         for link in detail_links:
             detail_page_url = link.get("href")
-            print("Scraping {}".format(detail_page_url))
+            print("[Scraping] {}".format(detail_page_url))
             filename = _theoccasionaltraveller_filename_for_detail_page_url(
                 detail_page_url)
             details_page = requests.get(detail_page_url)
@@ -144,7 +144,7 @@ def scrape_theoccasionaltraveller() -> None:
             _save_scraped_page(
                 constants.SITE_NAME_THEOCCASIONALTRAVELLER,
                 filename, details_page_soup)
-    print("Scraping done for theoccasionaltraveller")
+    print("[Scraping] done for theoccasionaltraveller")
 
 
 def _theoccasionaltraveller_filename_for_detail_page_url(full_url: str) -> str:

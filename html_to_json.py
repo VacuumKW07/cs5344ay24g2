@@ -24,7 +24,8 @@ import json
 def convert_alvinology() -> None:
     for (slug, soup) in _read_pages(constants.SITE_NAME_ALVINOLOGY):
         print(
-            "Converting {}: {}".format(constants.SITE_NAME_ALVINOLOGY, slug))
+            "[HTML to JSON] {}: {}".format(
+                constants.SITE_NAME_ALVINOLOGY, slug))
         title_h1 = soup.find(
             "h1", class_="cs-entry__title")
         title = title_h1.find("span").text
@@ -45,7 +46,7 @@ def convert_alvinology() -> None:
         doc = {"title": title, "content": content}
         _save_json(constants.SITE_NAME_ALVINOLOGY, slug, doc)
 
-    print("Converting done for alvinology")
+    print("[HTML to JSON] done for alvinology")
 
 
 def convert_theoccasionaltraveller() -> None:
@@ -53,7 +54,7 @@ def convert_theoccasionaltraveller() -> None:
         constants.SITE_NAME_THEOCCASIONALTRAVELLER
     ):
         print(
-            "Converting {}: {}".format(
+            "[HTML to JSON] {}: {}".format(
                 constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug
             )
         )
@@ -79,7 +80,7 @@ def convert_theoccasionaltraveller() -> None:
         _save_json(
             constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug, doc)
 
-    print("Converting done for theoccasionaltraveller")
+    print("[HTML to JSON] done for theoccasionaltraveller")
 
 
 def convert_travelerfolio() -> None:
@@ -87,7 +88,7 @@ def convert_travelerfolio() -> None:
         constants.SITE_NAME_TRAVELERFOLIO
     ):
         print(
-            "Converting {}: {}".format(
+            "[HTML to JSON] {}: {}".format(
                 constants.SITE_NAME_TRAVELERFOLIO, slug
             )
         )
@@ -113,7 +114,7 @@ def convert_travelerfolio() -> None:
         _save_json(
             constants.SITE_NAME_TRAVELERFOLIO, slug, doc)
 
-    print("Converting done for travelerfolio")
+    print("[HTML to JSON] done for travelerfolio")
 
 
 def convert_thesmartlocal() -> None:
@@ -121,7 +122,7 @@ def convert_thesmartlocal() -> None:
         constants.SITE_NAME_THESMARTLOCAL
     ):
         print(
-            "Converting {}: {}".format(
+            "[HTML to JSON] {}: {}".format(
                 constants.SITE_NAME_THESMARTLOCAL, slug
             )
         )
@@ -145,7 +146,7 @@ def convert_thesmartlocal() -> None:
         _save_json(
             constants.SITE_NAME_THESMARTLOCAL, slug, doc)
 
-    print("Converting done for thesmartlocal")
+    print("[HTML to JSON] done for thesmartlocal")
 
 
 def _read_pages(domain_name: str) -> Iterable[Tuple[str, BeautifulSoup]]:
