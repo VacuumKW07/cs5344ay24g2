@@ -42,13 +42,52 @@ def add_key_terms() -> None:
 
 
 def _key_terms_from_doc(doc: dict) -> List[Set[str]]:
+    # TODO: Perhaps shingles
+
+    all_terms = []
+
+    title = doc.get(DOC_KEY_TITLE)
+    # All terms in title are important
+    all_terms += list(_terms_from_text(title))
+
+    for para in doc.get(DOC_KEY_CONTENT):
+        if para.get(DOC_CONTENT_ITEM_KEY_TYPE) in [
+            DOC_CONTENT_ITEM_TYPE_H2,
+            DOC_CONTENT_ITEM_TYPE_H3
+        ]:
+            # H2 and H3 are considered subtitles: all terms important
+            all_terms += list(
+                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
+        elif para.get(DOC_CONTENT_ITEM_KEY_TYPE) == DOC_CONTENT_ITEM_TYPE_TEXT:
+            key_terms = _tf_idf(
+                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
+            all_terms += key_terms
+
+    # There could be duplicates between title, subtitle and text
+    no_dup = []
+    for term in all_terms:
+        if term not in no_dup:
+            no_dup.append(term)
+
+    return no_dup
+
+
+def _terms_from_text(text: str) -> Iterable[Set[str]]:
+    for word in _filter_stopwords(_text_to_words(text)):
+        yield {word}
+
+
+def _tf_idf(terms: Iterable[Set[str]]) -> List[Set[str]]:
     # TODO: change data structure of freqs if needed
     freqs = {}
-    for term in _all_terms_from_doc(doc):
+    for term in terms:
         key = _dict_key_for_term(term)
         if key not in freqs:
             freqs[key] = 0
         freqs[key] = freqs[key] + 1
+
+    if not freqs:
+        return []
 
     max_freq = max([freqs[key] for key in freqs])
 
@@ -66,26 +105,7 @@ def _dict_key_for_term(s: Set[str]) -> str:
 
 
 def _term_from_dict_key(key: str) -> Set[str]:
-    return key.split(",")
-
-
-def _all_terms_from_doc(doc: dict) -> Iterable[Set[str]]:
-    # TODO: Perhaps shingles
-
-    title = doc.get(DOC_KEY_TITLE)
-    for title_word in _filter_stopwords(_text_to_words(title)):
-        yield {title_word}
-
-    for para in doc.get(DOC_KEY_CONTENT):
-        if para.get(DOC_CONTENT_ITEM_KEY_TYPE) in [
-            DOC_CONTENT_ITEM_TYPE_H2,
-            DOC_CONTENT_ITEM_TYPE_H3,
-            DOC_CONTENT_ITEM_TYPE_TEXT
-        ]:
-            for word in _filter_stopwords(
-                _text_to_words(para.get(DOC_CONTENT_ITEM_KEY_TEXT))
-            ):
-                yield {word}
+    return set(key.split(","))
 
 
 def _filter_stopwords(words: Iterable[str]) -> Iterable[str]:
