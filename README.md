@@ -38,9 +38,9 @@ python3 key_terms.py
   - Reason: attraction names are sometimes up to 3 words
 - Used TF.IDF for finding key terms within documents
   - Text from headings and titles treated the same as normal text; TF.IDF robust enough to find significance of words even when hierarchy is lost.
-- Tried using a threshold, but does not produce a good balance of terms per document
+- Tried using a threshold to only accept terms with a TF.IDF above some threshold, but does not produce a good balance of terms per document
   - TF.IDF Threshold: 0.5, Total terms: 1930585, Avg / doc: 488.8794631552292, Min / doc: 2, Max / doc: 2466
-- Will try taking the top x terms for each document instead
+- Switched to taking the top n terms based on TF.IDF for each document instead
 ## Problems:
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"

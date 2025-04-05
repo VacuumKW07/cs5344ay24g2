@@ -25,8 +25,7 @@ from constants import (
     NLTK_STOPWORDS
 )
 
-
-TF_IDF_THRESHOLD = 0.5
+NUM_TOP_TERMS = 20
 
 
 # term: how many documents it appears in
@@ -36,9 +35,6 @@ _global_idf = {}
 
 def add_key_terms() -> None:
     doc_index = 0
-    total_terms = 0
-    min_terms_in_doc = 1000
-    max_terms_in_doc = 0
 
     # First pass, collect document counts, needed for TF.IDF
     for doc in _read_src_files():
@@ -77,42 +73,28 @@ def add_key_terms() -> None:
             str(curr_filename)))
         filepath = "{}/{}.json".format(
             constants.DIR_KEY_TERMS, str(curr_filename))
+
         key_terms = []
         with open(filepath, 'r', encoding='utf-8') as f:
             doc = json.loads(f.read())
+            term_and_tf_idf = []
             for term, tf in doc.get("_term_and_tfs"):
                 term_key = _dict_key_for_term(term)
                 idf = _global_idf.get(term_key)
                 tf_idf = tf * idf
-                if tf_idf >= TF_IDF_THRESHOLD:
-                    key_terms.append(term)
+                term_and_tf_idf.append((term, tf_idf))
+            sorted_term_and_tf_idf = sorted(
+                term_and_tf_idf, key=lambda tup: tup[1], reverse=True)
+            key_terms = [
+                term for (term, _) in sorted_term_and_tf_idf[:NUM_TOP_TERMS]]
             doc[DOC_KEY_KEY_TERMS] = key_terms
-            # Clean up - is huge
-            del doc["_term_and_tfs"]
             _save_doc(str(curr_filename), doc)
 
         print("[Key Terms] Second pass: Doc {} saved".format(
             str(curr_filename)))
 
-        num_terms = len(key_terms)
-
-        print("[Key Terms] Second pass: Doc {} has {} key terms".format(
-            str(curr_filename), num_terms))
-
-        total_terms += num_terms
-        if num_terms < min_terms_in_doc:
-            min_terms_in_doc = num_terms
-        if num_terms > max_terms_in_doc:
-            max_terms_in_doc = num_terms
-
-    print(
-        "[Key Terms] TF.IDF Threshold: {}, \
-Total terms: {}, Avg / doc: {}, Min / doc: {}, Max / doc: {}".format(
-            str(TF_IDF_THRESHOLD),
-            str(total_terms), str(total_terms / doc_index),
-            str(min_terms_in_doc),
-            str(max_terms_in_doc),
-        ))
+    print("[Key Terms] Top {} terms for each Doc saved".format(
+        str(NUM_TOP_TERMS)))
     print("[Key Terms] Done")
 
 
