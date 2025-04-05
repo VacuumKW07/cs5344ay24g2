@@ -20,7 +20,7 @@ python3 scrape.py
 # Converting scraped html data into json
 ```
 source venv/bin/activate
-python3 convert.py
+python3 html_to_json.py
 ```
 
 ---
