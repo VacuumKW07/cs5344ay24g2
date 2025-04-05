@@ -2,16 +2,7 @@
 Needs html data to first have been scraped
 
 Convert Scraped HTML content into our documents of our own data structure
-{
-    title: <main title>
-    content: [
-        {
-            type: <img | h2 | h3 | text>,
-            text: <text if any>,
-            src: <src if any>
-        }
-    ]
-}
+Refer to `constants` file for data structure
 """
 from typing import Tuple
 from collections.abc import Iterable
@@ -34,16 +25,30 @@ def convert_alvinology() -> None:
         for para in content_div.find_all("p"):
             if para.find("img"):
                 img = para.find("img")
-                content.append({"type": "img", "src": img.get("src")})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_IMG,
+                    constants.DOC_CONTENT_ITEM_KEY_SRC: img.get("src")})
             elif para.find("h2"):
                 h2 = para.find("h2")
-                content.append({"type": "h2", "text": h2.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H2,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: h2.get_text()})
             elif para.find("h3"):
                 h3 = para.find("h3")
-                content.append({"type": "h3", "text": h3.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H3,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: h3.get_text()})
             else:
-                content.append({"type": "text", "text": para.get_text()})
-        doc = {"title": title, "content": content}
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_TEXT,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: para.get_text()})
+        doc = {
+            constants.DOC_KEY_TITLE: title,
+            constants.DOC_KEY_CONTENT: content}
         _save_json(constants.SITE_NAME_ALVINOLOGY, slug, doc)
 
     print("[HTML to JSON] done for alvinology")
@@ -67,16 +72,30 @@ def convert_theoccasionaltraveller() -> None:
             if line.name == "div":
                 if line.find("img"):
                     img = line.find("img")
-                    content.append({"type": "img", "src": img.get("src")})
+                    content.append({
+                        constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                            constants.DOC_CONTENT_ITEM_TYPE_IMG,
+                        constants.DOC_CONTENT_ITEM_KEY_SRC: img.get("src")})
                 else:
                     continue
             elif line.name == "h2":
-                content.append({"type": "h2", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H2,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "h3":
-                content.append({"type": "h3", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H3,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "p":
-                content.append({"type": "text", "text": line.get_text()})
-        doc = {"title": title, "content": content}
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_TEXT,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
+        doc = {
+            constants.DOC_KEY_TITLE: title,
+            constants.DOC_KEY_CONTENT: content}
         _save_json(
             constants.SITE_NAME_THEOCCASIONALTRAVELLER, slug, doc)
 
@@ -101,16 +120,30 @@ def convert_travelerfolio() -> None:
             if line.name == "figure":
                 if line.find("img"):
                     img = line.find("img")
-                    content.append({"type": "img", "src": img.get("src")})
+                    content.append({
+                        constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                            constants.DOC_CONTENT_ITEM_TYPE_IMG,
+                        constants.DOC_CONTENT_ITEM_KEY_SRC: img.get("src")})
                 else:
                     continue
             elif line.name == "h2":
-                content.append({"type": "h2", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H2,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "h3":
-                content.append({"type": "h3", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H3,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "p":
-                content.append({"type": "text", "text": line.get_text()})
-        doc = {"title": title, "content": content}
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_TEXT,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
+        doc = {
+            constants.DOC_KEY_TITLE: title,
+            constants.DOC_KEY_CONTENT: content}
         _save_json(
             constants.SITE_NAME_TRAVELERFOLIO, slug, doc)
 
@@ -133,16 +166,29 @@ def convert_thesmartlocal() -> None:
         content = []
         for line in content_div.find_all():
             if line.name == "h2":
-                content.append({"type": "h2", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H2,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "h3":
-                content.append({"type": "h3", "text": line.get_text()})
+                content.append({
+                    constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                        constants.DOC_CONTENT_ITEM_TYPE_H3,
+                    constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
             elif line.name == "p":
                 if line.find("img"):
                     img = line.find("img")
-                    content.append({"type": "img", "src": img.get("src")})
+                    content.append({
+                        constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                            constants.DOC_CONTENT_ITEM_TYPE_IMG,
+                        constants.DOC_CONTENT_ITEM_KEY_SRC: img.get("src")})
                 else:
-                    content.append({"type": "text", "text": line.get_text()})
-        doc = {"title": title, "content": content}
+                    content.append({
+                        constants.DOC_CONTENT_ITEM_KEY_TYPE:
+                            constants.DOC_CONTENT_ITEM_TYPE_TEXT,
+                        constants.DOC_CONTENT_ITEM_KEY_TEXT: line.get_text()})
+        doc = {
+            constants.DOC_KEY_TITLE: title, constants.DOC_KEY_CONTENT: content}
         _save_json(
             constants.SITE_NAME_THESMARTLOCAL, slug, doc)
 
