@@ -25,7 +25,7 @@ from constants import (
 )
 
 
-TF_IDF_THRESHOLD = 0.2
+TF_IDF_THRESHOLD = 0.5
 
 
 def add_key_terms() -> None:
@@ -33,22 +33,68 @@ def add_key_terms() -> None:
     for doc in _read_files():
         doc_index += 1
         print("[Key Terms] Processing doc {}".format(str(doc_index)))
-        # Terms are sets but we can only json serialise lists
-        doc[DOC_KEY_KEY_TERMS] = [
-            list(term_set) for term_set in _key_terms_from_doc(doc)]
+        doc[DOC_KEY_KEY_TERMS] = _key_terms_from_doc(doc)
         _save_doc(str(doc_index), doc)
         print("[Key Terms] Doc {} saved".format(str(doc_index)))
     print("[Key Terms] Done")
 
 
-def _key_terms_from_doc(doc: dict) -> List[Set[str]]:
+def _key_terms_from_doc(doc: dict) -> List[List[str]]:
+
+    all_terms = []
+
+    title = doc.get(DOC_KEY_TITLE)
+    # All terms in title are important
+    all_terms += list(_terms_from_text(title))
+
+    for para in doc.get(DOC_KEY_CONTENT):
+        if para.get(DOC_CONTENT_ITEM_KEY_TYPE) in [
+            DOC_CONTENT_ITEM_TYPE_H2,
+            DOC_CONTENT_ITEM_TYPE_H3
+        ]:
+            # H2 and H3 are considered subtitles: all terms important
+            all_terms += list(
+                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
+        elif para.get(DOC_CONTENT_ITEM_KEY_TYPE) == DOC_CONTENT_ITEM_TYPE_TEXT:
+            key_terms = _tf_idf(
+                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
+            all_terms += key_terms
+
+    # There could be duplicates between title, subtitle and text
+    no_dup = []
+    for term in all_terms:
+        if term not in no_dup:
+            no_dup.append(term)
+
+    return no_dup
+
+
+def _terms_from_text(text: str) -> Iterable[List[str]]:
+    words = list(_filter_stopwords(_text_to_words(text)))
+    for shingle in _shingles_from_words(words, k=1):
+        yield shingle
+    for shingle in _shingles_from_words(words, k=2):
+        yield shingle
+    for shingle in _shingles_from_words(words, k=3):
+        yield shingle
+
+
+def _shingles_from_words(words: List[str], k: int) -> Iterable[List[str]]:
+    for start in range(len(words)):
+        yield words[start:(start + k)]
+
+
+def _tf_idf(terms: Iterable[Set[str]]) -> List[Set[str]]:
     # TODO: change data structure of freqs if needed
     freqs = {}
-    for term in _all_terms_from_doc(doc):
+    for term in terms:
         key = _dict_key_for_term(term)
         if key not in freqs:
             freqs[key] = 0
         freqs[key] = freqs[key] + 1
+
+    if not freqs:
+        return []
 
     max_freq = max([freqs[key] for key in freqs])
 
@@ -60,32 +106,13 @@ def _key_terms_from_doc(doc: dict) -> List[Set[str]]:
     return key_terms
 
 
-def _dict_key_for_term(s: Set[str]) -> str:
+def _dict_key_for_term(s: List[str]) -> str:
     """Modify if needed"""
-    return ",".join(list(s))
+    return ",".join(s)
 
 
-def _term_from_dict_key(key: str) -> Set[str]:
+def _term_from_dict_key(key: str) -> List[str]:
     return key.split(",")
-
-
-def _all_terms_from_doc(doc: dict) -> Iterable[Set[str]]:
-    # TODO: Perhaps shingles
-
-    title = doc.get(DOC_KEY_TITLE)
-    for title_word in _filter_stopwords(_text_to_words(title)):
-        yield {title_word}
-
-    for para in doc.get(DOC_KEY_CONTENT):
-        if para.get(DOC_CONTENT_ITEM_KEY_TYPE) in [
-            DOC_CONTENT_ITEM_TYPE_H2,
-            DOC_CONTENT_ITEM_TYPE_H3,
-            DOC_CONTENT_ITEM_TYPE_TEXT
-        ]:
-            for word in _filter_stopwords(
-                _text_to_words(para.get(DOC_CONTENT_ITEM_KEY_TEXT))
-            ):
-                yield {word}
 
 
 def _filter_stopwords(words: Iterable[str]) -> Iterable[str]:
