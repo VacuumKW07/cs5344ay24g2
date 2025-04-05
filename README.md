@@ -45,6 +45,16 @@ python3 key_terms.py
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
 
+## TODO:
+- Similar documents: Use the minhashing and LSH of terms to find jaccard similarity between documents
+- Clustering: Use document similarity to do hierarchical clustering
+- Frequent Itemsets: find association rules based on terms
+- Images:
+  - Downloading and transforming
+  - Tagging with the terms from the same document
+    - Or even better, with the terms nearest to its position in the document
+- Change code to using mapreduce
+
 
 # Data Sources:
 - Stopwords from Python NLTK library: https://www.nltk.org/
