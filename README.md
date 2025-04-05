@@ -26,6 +26,9 @@ python3 html_to_json.py
 # Notes:
 - Articles scraped: `3949`
 - Use TF.IDF for finding key terms within documents
+## Problems:
+- Articles sometimes reference some other location
+  - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
 
 
 # Data Sources:
