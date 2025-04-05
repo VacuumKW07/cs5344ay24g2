@@ -8,7 +8,8 @@ import os
 from collections.abc import Iterable
 import json
 import re
-from typing import List, Set
+import math
+from typing import List, Set, Tuple
 import constants
 from constants import (
     DOC_KEY_TITLE,
@@ -28,55 +29,106 @@ from constants import (
 TF_IDF_THRESHOLD = 0.5
 
 
+# term: how many documents it appears in
+_global_term_doc_counts = {}
+_global_idf = {}
+
+
 def add_key_terms() -> None:
     doc_index = 0
     total_terms = 0
-    for doc in _read_files():
-        doc_index += 1
-        print("[Key Terms] Processing doc {}".format(str(doc_index)))
-        terms = _key_terms_from_doc(doc)
-        doc[DOC_KEY_KEY_TERMS] = _key_terms_from_doc(doc)
-        num_terms = len(terms)
-        total_terms += num_terms
-        print("[Key Terms] doc {} has {} terms".format(
-            str(doc_index), str(num_terms)))
-        _save_doc(str(doc_index), doc)
-        print("[Key Terms] Doc {} saved".format(str(doc_index)))
+    min_terms_in_doc = 1000
+    max_terms_in_doc = 0
 
-    print("[Key Terms] Total terms: {}, Avg terms per doc: {}".format(
-        str(total_terms), str(total_terms / doc_index)
-    ))
+    # First pass, collect document counts, needed for TF.IDF
+    for doc in _read_src_files():
+        doc_index += 1
+        print("[Key Terms] First pass: Processing doc {}".format(
+            str(doc_index)))
+        _term_and_tfs = []
+        for term, tf in _tf(_text_terms_from_doc(doc)):
+            term_key = _dict_key_for_term(term)
+            if term_key not in _global_term_doc_counts:
+                _global_term_doc_counts[term_key] = 0
+            _global_term_doc_counts[term_key] = \
+                _global_term_doc_counts[term_key] + 1
+
+            _term_and_tfs.append((term, tf))
+
+        doc["_term_and_tfs"] = _term_and_tfs
+        # Write to disk first
+        _save_doc(str(doc_index), doc)
+        print("[Key Terms] First pass: Doc {} saved".format(str(doc_index)))
+
+    # Save global stats
+    _save_doc("global_term_doc_counts", _global_term_doc_counts)
+    print("[Key Terms] IDF calculation")
+    # Calculate idfs
+    for key in _global_term_doc_counts:
+        idf = math.log((doc_index / _global_term_doc_counts[key]), 2)
+        _global_idf[key] = idf
+    _save_doc("global_idf", _global_idf)
+    print("[Key Terms] IDF done")
+
+    # Second pass, calculate tf.idf and filter
+    for i in range(doc_index):
+        curr_filename = i + 1
+        print("[Key Terms] Second pass: Processing doc {}".format(
+            str(curr_filename)))
+        filepath = "{}/{}.json".format(
+            constants.DIR_KEY_TERMS, str(curr_filename))
+        key_terms = []
+        with open(filepath, 'r', encoding='utf-8') as f:
+            doc = json.loads(f.read())
+            for term, tf in doc.get("_term_and_tfs"):
+                term_key = _dict_key_for_term(term)
+                idf = _global_idf.get(term_key)
+                tf_idf = tf * idf
+                if tf_idf >= TF_IDF_THRESHOLD:
+                    key_terms.append(term)
+            doc[DOC_KEY_KEY_TERMS] = key_terms
+            # Clean up - is huge
+            del doc["_term_and_tfs"]
+            _save_doc(str(curr_filename), doc)
+
+        print("[Key Terms] Second pass: Doc {} saved".format(
+            str(curr_filename)))
+
+        num_terms = len(key_terms)
+
+        print("[Key Terms] Second pass: Doc {} has {} key terms".format(
+            str(curr_filename), num_terms))
+
+        total_terms += num_terms
+        if num_terms < min_terms_in_doc:
+            min_terms_in_doc = num_terms
+        if num_terms > max_terms_in_doc:
+            max_terms_in_doc = num_terms
+
+    print(
+        "[Key Terms] TF.IDF Threshold: {}, \
+Total terms: {}, Avg / doc: {}, Min / doc: {}, Max / doc: {}".format(
+            str(TF_IDF_THRESHOLD),
+            str(total_terms), str(total_terms / doc_index),
+            str(min_terms_in_doc),
+            str(max_terms_in_doc),
+        ))
     print("[Key Terms] Done")
 
 
-def _key_terms_from_doc(doc: dict) -> List[List[str]]:
+def _text_terms_from_doc(doc: dict) -> Iterable[List[str]]:
 
-    all_terms = []
-
-    title = doc.get(DOC_KEY_TITLE)
-    # All terms in title are important
-    all_terms += list(_terms_from_text(title))
+    for term in _terms_from_text(doc.get(DOC_KEY_TITLE)):
+        yield term
 
     for para in doc.get(DOC_KEY_CONTENT):
         if para.get(DOC_CONTENT_ITEM_KEY_TYPE) in [
+            DOC_CONTENT_ITEM_TYPE_TEXT,
             DOC_CONTENT_ITEM_TYPE_H2,
             DOC_CONTENT_ITEM_TYPE_H3
         ]:
-            # H2 and H3 are considered subtitles: all terms important
-            all_terms += list(
-                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
-        elif para.get(DOC_CONTENT_ITEM_KEY_TYPE) == DOC_CONTENT_ITEM_TYPE_TEXT:
-            key_terms = _tf_idf(
-                _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)))
-            all_terms += key_terms
-
-    # There could be duplicates between title, subtitle and text
-    no_dup = []
-    for term in all_terms:
-        if term not in no_dup:
-            no_dup.append(term)
-
-    return no_dup
+            for term in _terms_from_text(para.get(DOC_CONTENT_ITEM_KEY_TEXT)):
+                yield term
 
 
 def _terms_from_text(text: str) -> Iterable[List[str]]:
@@ -94,7 +146,7 @@ def _shingles_from_words(words: List[str], k: int) -> Iterable[List[str]]:
         yield words[start:(start + k)]
 
 
-def _tf_idf(terms: Iterable[Set[str]]) -> List[Set[str]]:
+def _tf(terms: Iterable[Set[str]]) -> Iterable[Tuple[List[str], float]]:
     # TODO: change data structure of freqs if needed
     freqs = {}
     for term in terms:
@@ -108,12 +160,8 @@ def _tf_idf(terms: Iterable[Set[str]]) -> List[Set[str]]:
 
     max_freq = max([freqs[key] for key in freqs])
 
-    key_terms = []
     for key in freqs:
-        tf_idf = freqs[key] / max_freq
-        if tf_idf > TF_IDF_THRESHOLD:
-            key_terms.append(_term_from_dict_key(key))
-    return key_terms
+        yield (_term_from_dict_key(key), freqs[key] / max_freq)
 
 
 def _dict_key_for_term(s: List[str]) -> str:
@@ -133,14 +181,20 @@ def _text_to_words(text: str) -> Iterable[str]:
     return [word for word in re.split(r'\W+', text.lower()) if word.isalpha()]
 
 
-def _read_files() -> Iterable[dict]:
-    for filepath in _get_filepaths():
+def _read_src_files() -> Iterable[dict]:
+    for filepath in _get_filepaths(constants.DIR_JSON):
         with open(filepath, 'r', encoding='utf-8') as f:
             yield json.loads(f.read())
 
 
-def _get_filepaths() -> Iterable[os.PathLike]:
-    for root, dirs, files in os.walk(constants.DIR_JSON):
+def _read_key_term_files() -> Iterable[dict]:
+    for filepath in _get_filepaths(constants.DIR_KEY_TERMS):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            yield json.loads(f.read())
+
+
+def _get_filepaths(parent_path: os.PathLike) -> Iterable[os.PathLike]:
+    for root, dirs, files in os.walk(parent_path):
         for name in files:
             yield os.path.join(root, name)
 

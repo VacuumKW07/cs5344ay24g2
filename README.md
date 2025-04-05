@@ -36,11 +36,11 @@ python3 key_terms.py
 ## Terms
 - 1-shingle, 2-shingle and 3-shingle used for terms
   - Reason: attraction names are sometimes up to 3 words
-- Used TF.IDF for finding key terms within normal text paragraphs in documents
-  - TF.IDF not applied to headings as we consider all terms from headings important
-- Stats:
-  - When TF.IDF threshold 0.5
-    - Avg terms per doc: 87.10939478348949
+- Used TF.IDF for finding key terms within documents
+  - Text from headings and titles treated the same as normal text; TF.IDF robust enough to find significance of words even when hierarchy is lost.
+- Tried using a threshold, but does not produce a good balance of terms per document
+  - TF.IDF Threshold: 0.5, Total terms: 1930585, Avg / doc: 488.8794631552292, Min / doc: 2, Max / doc: 2466
+- Will try taking the top x terms for each document instead
 ## Problems:
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
