@@ -45,7 +45,7 @@ python3 key_terms.py
 
 ### Taking the top n terms with the highest TF.IDF
 See `TF_IDF_SAMPLES.md`
-Analysis: n=200 seems the sweet spot because at around n=300 the newer terms returned for some articles seem to be promotions
+Analysis: n=200 seems the sweet spot because at around n=300 some articles start returning non-travel-activity related words to do with their promotions
 
 ## Problems:
 - Articles sometimes reference some other location

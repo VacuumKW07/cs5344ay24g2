@@ -1,7 +1,7 @@
 # Sample sources:
 - 3.json
-- 2689.json 
-- 3702.json 
+- 2689.json
+- 3702.json
 
 # n=20
 ```[["mosque"], ["grand", "mosque"], ["zayed", "grand"], ["zayed", "grand", "mosque"], ["zayed"], ["detail"], ["sheikh", "zayed", "grand"], ["sheikh", "zayed"], ["entering", "mosque"], ["sheikh"], ["detail", "carved"], ["allah"], ["carpet"], ["directed"], ["doorways"], ["crystals"], ["gleaming"], ["hallway"], ["courts", "imagine"], ["islamic", "one"]]`
