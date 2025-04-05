@@ -25,7 +25,7 @@ from constants import (
     NLTK_STOPWORDS
 )
 
-NUM_TOP_TERMS = 20
+NUM_TOP_TERMS = 200
 
 
 # term: how many documents it appears in
@@ -65,6 +65,17 @@ def add_key_terms() -> None:
         _global_idf[key] = idf
     _save_doc("global_idf", _global_idf)
     print("[Key Terms] IDF done")
+
+    """
+    # For skipping first pass,
+    # comment the blocks above and uncomment this block
+    doc_index = 3949
+    with open(
+        constants.DIR_KEY_TERMS + "/global_idf.json",
+        'r', encoding='utf-8'
+    ) as f:
+        _global_idf = json.loads(f.read())
+    """
 
     # Second pass, calculate tf.idf and filter
     for i in range(doc_index):
