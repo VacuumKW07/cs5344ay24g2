@@ -50,19 +50,23 @@ Analysis: n=200 seems the sweet spot because at around n=300 some articles start
 ## Problems:
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
-- Many Ad Articles: articles which content are mainly not relevant to what one does in a country
+  - No real solution yet
+- Many Ad Articles: articles that have large proportions of content not relevant to what one does in a country
   - Perhaps Clustering can help: discard very small clusters
   - Perhaps the recommendation / frequent items would not find the content of these articles frequent anyway
+- Country / location names are too common across documents and would hence have a low IDF
+  - Make a search for location names in text separate from TF.IDF
 
 ## TODO:
-- Similar documents: Use the minhashing and LSH of terms to find jaccard similarity between documents
-- Clustering: Use document similarity to do hierarchical clustering
-- Frequent Itemsets: find association rules based on terms
-- Images:
+- [High] Include specially searched location / country keywords into terms regardless of TF.IDF
+- [High] Frequent Itemsets: find association rules based on terms
+- [High] Images:
   - Downloading and transforming
   - Tagging with the terms from the same document
     - Or even better, with the terms nearest to its position in the document
-- Change code to using mapreduce
+- [Low]Change code to using mapreduce
+- [Low] Similar documents: Use the minhashing and LSH of terms to find jaccard similarity between documents
+- [Low] Clustering: Use document similarity to do hierarchical clustering
 
 
 # Data Sources:
