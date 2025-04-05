@@ -23,5 +23,9 @@ source venv/bin/activate
 python3 html_to_json.py
 ```
 
+# Notes:
+- Articles scraped: `3949`
+- Use TF.IDF for finding key terms within documents
+
 ---
 data will be scraped/generated into `data/`
