@@ -50,6 +50,9 @@ Analysis: n=200 seems the sweet spot because at around n=300 some articles start
 ## Problems:
 - Articles sometimes reference some other location
   - Ex: article about Phuket, "Quiet beach is definitely a far cry from Patong"
+- Many Ad Articles: articles which content are mainly not relevant to what one does in a country
+  - Perhaps Clustering can help: discard very small clusters
+  - Perhaps the recommendation / frequent items would not find the content of these articles frequent anyway
 
 ## TODO:
 - Similar documents: Use the minhashing and LSH of terms to find jaccard similarity between documents
