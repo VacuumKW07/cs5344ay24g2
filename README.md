@@ -27,5 +27,14 @@ python3 html_to_json.py
 - Articles scraped: `3949`
 - Use TF.IDF for finding key terms within documents
 
+
+# Data Sources:
+Stopwords from Python NLTK library: https://www.nltk.org/
+Scraped sites:
+    - https://travelerfolio.com/
+    - https://thesmartlocal.com/
+    - https://alvinology.com/
+    - https://theoccasionaltraveller.net/
+
 ---
 data will be scraped/generated into `data/`
