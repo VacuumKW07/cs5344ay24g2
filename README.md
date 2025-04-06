@@ -59,7 +59,9 @@ Analysis: n=200 seems the sweet spot because at around n=300 some articles start
   - Make a search for location names in text separate from TF.IDF
 
 ## TODO:
-- [High] Images:
+- [High] Presentation PPT
+  - Person in charge tries to understand what everyone's been doing and creates the slides to their understanding
+- [High] Process and Tag Images:
   - Downloading and transforming
   - Tagging with the terms from the same document
     - Or even better, with the terms nearest to its position in the document
